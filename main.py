@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends
-from . import models, database, schemas
-from .routers import routine, user, auth, bot,subRoutine
+
+from .db import database
+from .routers import routine, user, auth, bot,subRoutine, exercises
 
 
 try:
@@ -16,7 +17,7 @@ app.include_router(user.router)
 app.include_router(bot.router)
 app.include_router(auth.router)
 app.include_router(subRoutine.router)
-
+app.include_router(exercises.router)
 
 
 

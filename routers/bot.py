@@ -1,8 +1,9 @@
-from .. import models, schemas, utils, database, oauth2
+from ..db import database, models
+from .. import schemas, utils, oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 from groq import Groq
-from config import Config
+from ..config import Config
 
 
 

@@ -1,4 +1,5 @@
-from .. import models, schemas, utils, database, oauth2
+from ..db import database, models
+from .. import schemas, utils, oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
 import sqlalchemy
@@ -17,6 +18,7 @@ router = APIRouter(
 def get_all_routines(limit : int = 10, skip : int = 0, search : Optional[str] = "" ):
     with database.session as sess:
         routines = sess.exec(sqlm.select(models.Rutina).where(models.Rutina.name.contains(search)).limit(limit).offset(skip)).all()
+        
         return routines
 
 @router.post('/')
@@ -27,11 +29,11 @@ def create_routine(routine : schemas.Routine, user_id: int = Depends(oauth2.get_
         sess.commit()
         return {'new created routine': new_routine}
 
-@router.get('/{id}', )
+@router.get('/{id}', response_model=schemas.RoutineRead)
 def get_routine(id : int):
     with database.session as sess:
         routine = sess.exec(sqlm.select(models.Rutina).where(models.Rutina.id == id)).one()
-        return {"routine": routine, "days" : routine.days}
+        return routine
 
 @router.put('/{name}' ,response_model=schemas.RoutineRead)
 def update_routine(name : str, data: schemas.RoutineUpdate, user_id: int = Depends(oauth2.get_current_user)):
@@ -53,6 +55,8 @@ def delete_routine(name : str, user_id: int = Depends(oauth2.get_current_user)):
         q = sqlm.select(models.Rutina).where(models.Rutina.name == name)
         results = sess.exec(q)
         routine = results.one()
+        if user_id.id != routine.owner_id:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
         sess.delete(routine)
         sess.commit()
     return {"routine deleted"}

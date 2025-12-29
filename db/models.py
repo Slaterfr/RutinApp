@@ -1,8 +1,11 @@
 from sqlmodel import Field, SQLModel, Relationship
 from pydantic import EmailStr
+from typing import Optional
 
 class User(SQLModel, table=True):
     id : int | None = Field(default=None, primary_key=True)
+    username : Optional[str]
+    biography : Optional[str]
     email : EmailStr
     password : str
     routines : list["Rutina"] = Relationship(back_populates="owner")
@@ -25,9 +28,18 @@ class DiaRutina(SQLModel, table=True):
     routine : Rutina | None = Relationship(back_populates="days")
     exercises : list["detalleEjercicio"] = Relationship(back_populates="day")
 
+class Ejercicio(SQLModel, table=True):
+    id : int | None = Field(default=None, primary_key=True)
+    exersise_name : str
+    instructions : str
+    equipment_needed : str
+    category : str
+
+
+
 class detalleEjercicio(SQLModel, table=True):
     detail_id : int | None = Field(default=None, primary_key=True)
-    excersise_id : int
+    exersise_id : int | None = Field(default=None, foreign_key="ejercicio.id")
     name : str 
     set_count : int
     rep_target : int

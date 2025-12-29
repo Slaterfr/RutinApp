@@ -1,4 +1,4 @@
-from .config import Config
+from ..config import Config
 import sqlmodel as sqlm
 
 URI = str(Config.DATABASE_URI)

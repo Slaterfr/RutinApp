@@ -19,7 +19,6 @@ class RoutineRead(BaseModel):
     name : str
     days_trained : int
     hours_trained : float
-    days : list
 
 class RoutineUpdate(SQLModel):
     name : Optional[str]
@@ -33,9 +32,28 @@ class DayCreate(SQLModel):
     day_number : int
     day_name : str
     focus_area : str
+
+class DaysRead(SQLModel):
+    owner_id : int
+    name : str
+    days_trained : int
+    days : list
     
+class DayUpdate(SQLModel):
+    day_number : Optional[int]
+    day_name : Optional[str]
+    focus_area : Optional[str]
+
+class ExerciseDetailsCreate(SQLModel):
+    day_id : int
+    set_count : int
+    rep_target : int
+    rest_seconds : int
+    weight_notes : str
 
 class UserCreate(SQLModel):
+    username : str
+    bio : Optional[str]
     email : EmailStr
     password : str
 

@@ -7,7 +7,7 @@ from .config import Config
 
 SECRET_KEY = Config.SECRET_KEY
 ALGORITHM = Config.TOKEN_ALGORITH
-ACCESS_TOKEN_EXPIRE_MINUTES = Config.JWT_EXPIRATION
+ACCESS_TOKEN_EXPIRE_MINUTES = int(Config.JWT_EXPIRATION)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 

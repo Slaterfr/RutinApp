@@ -1,5 +1,7 @@
-from .. import models, schemas, utils, database
+from ..db import database, models
+from .. import schemas, utils
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
+
 
 router = APIRouter(
     prefix='/users',
@@ -22,3 +24,4 @@ def create_user(user : schemas.UserCreate):
         sess.refresh(new_user)
 
         return new_user
+    
