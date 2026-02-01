@@ -1,10 +1,13 @@
-from ..db import database, models
-from .. import schemas, utils, oauth2
+from ..models import models
+from ..db import database
+from ..schemas import Routine, RoutinesRead, RoutineRead, RoutineUpdate
+from ..dependencys import oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
 import sqlalchemy
 from typing import Optional
-
+from ..services.routines import RoutineService
+from ..services.handlers import InvalidData
 
 
 router = APIRouter(
@@ -12,51 +15,25 @@ router = APIRouter(
     tags=['Routines']
 )
 
+routine_service = RoutineService()
 
 
-@router.get('/', response_model=list[schemas.RoutinesRead])
+@router.get('/', response_model=list[RoutinesRead])
 def get_all_routines(limit : int = 10, skip : int = 0, search : Optional[str] = "" ):
-    with database.session as sess:
-        routines = sess.exec(sqlm.select(models.Rutina).where(models.Rutina.name.contains(search)).limit(limit).offset(skip)).all()
-        
-        return routines
+    return routine_service.get_all(skip=skip, limit=limit, search=search)
 
 @router.post('/')
-def create_routine(routine : schemas.Routine, user_id: int = Depends(oauth2.get_current_user) ):
-    with database.session as sess:
-        new_routine = models.Rutina(owner_id=user_id.id, **routine.dict())
-        sess.add(new_routine)        
-        sess.commit()
-        return {'new created routine': new_routine}
+def create_routine(routine : Routine, user_id: int = Depends(oauth2.get_current_user) ):
+    return routine_service.create(routine, user_id.id)
 
-@router.get('/{id}', response_model=schemas.RoutineRead)
+@router.get('/{id}', response_model=RoutineRead)
 def get_routine(id : int):
-    with database.session as sess:
-        routine = sess.exec(sqlm.select(models.Rutina).where(models.Rutina.id == id)).one()
-        return routine
+    return routine_service.get_by_id(id)
 
-@router.put('/{name}' ,response_model=schemas.RoutineRead)
-def update_routine(name : str, data: schemas.RoutineUpdate, user_id: int = Depends(oauth2.get_current_user)):
-    with database.session as sess:
-        q= sqlm.select(models.Rutina).where(models.Rutina.name == name)
-        routine = sess.exec(q).first()
+@router.put('/{routine_id}' ,response_model=RoutineRead)
+def update_routine(routine_id : int, data: RoutineUpdate, user_id: int = Depends(oauth2.get_current_user)):
+    return routine_service.update(routine_id, data, user_id.id)
 
-        routine.sqlmodel_update(data)
-
-        sess.add(routine)
-        sess.commit()
-        sess.refresh(routine)
-
-        return routine
-
-@router.delete('/{name}')
-def delete_routine(name : str, user_id: int = Depends(oauth2.get_current_user)):
-    with database.session as sess:
-        q = sqlm.select(models.Rutina).where(models.Rutina.name == name)
-        results = sess.exec(q)
-        routine = results.one()
-        if user_id.id != routine.owner_id:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-        sess.delete(routine)
-        sess.commit()
-    return {"routine deleted"}
+@router.delete('/{routine_id}')
+def delete_routine(routine_id : int, user_id: int = Depends(oauth2.get_current_user)):
+    return routine_service.delete(routine_id, user_id.id)

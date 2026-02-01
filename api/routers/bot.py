@@ -1,11 +1,11 @@
-from ..models import models
-from ..db import database
-from ..schemas import BotRequest
-from ..dependencys import utils, oauth2
+from ...db import database
+from ...models import models
+from ...schemas import BotRequest
+from ...dependencys import utils, oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 from groq import Groq
-from ..config import Config
+from ...config import Config
 
 
 

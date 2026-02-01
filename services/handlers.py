@@ -1,0 +1,4 @@
+
+
+class InvalidData(Exception):
+    pass
