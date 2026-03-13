@@ -29,3 +29,5 @@ class TokenData(BaseModel):
 class BotRequest(BaseModel):
     User_input : str
 
+class RefreshRequest(BaseModel):
+    refresh_token: str

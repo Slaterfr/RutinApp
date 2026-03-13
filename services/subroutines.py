@@ -1,5 +1,5 @@
 from ..repositories.crud import CRUDBase
-from ..models.models import Rutina, DiaRutina
+from ..models.models import Routine, RoutineDay
 from ..db import database
 from fastapi import HTTPException, status
 import sqlmodel as sqlm
@@ -7,13 +7,13 @@ import sqlmodel as sqlm
 
 class SubRoutineService:
     def __init__(self):
-        self.crud_routine = CRUDBase(Rutina)
-        self.crud_day = CRUDBase(DiaRutina)
+        self.crud_routine = CRUDBase(Routine)
+        self.crud_day = CRUDBase(RoutineDay)
     
     def get_days(self, routine_id: int):
         """Get all days for a routine"""
         with database.session as sess:
-            routine = sess.exec(sqlm.select(Rutina).where(Rutina.id == routine_id)).first()
+            routine = sess.exec(sqlm.select(Routine).where(Routine.id == routine_id)).first()
             if not routine:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
             return routine.days if hasattr(routine, 'days') else []

@@ -9,10 +9,10 @@ api_key = Config.GROQ_KEY
 
 def get_routine(id : int):
     with database.session as sess:
-        rutina = sess.exec(sqml.select(models.Rutina).where(models.Rutina.id == id))
+        rutina = sess.exec(sqml.select(models.Routine).where(models.Routine.id == id))
         return rutina
 
-routine = get_routine(1)
+# routine = get_routine(1)  # Removed: This was querying DB at import time
 
 prompt = """
 Rutina: {routine}

@@ -1,0 +1,10 @@
+fastapi[standard]
+pylance 
+sqlmodel
+sqlalchemy
+psycopg2
+python-jose[cryptography]
+pytest
+passlib
+jose
+groq

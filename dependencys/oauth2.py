@@ -11,6 +11,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(Config.JWT_EXPIRATION)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
+import secrets
+
+REFRESH_TOKEN_EXPIRE_DAYS = 7
+
+def create_refresh_token() -> str:
+    return secrets.token_urlsafe(64)
+
 def create_token(data : dict):
     to_encode = data.copy()
     expire = dt.datetime.utcnow() + dt.timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

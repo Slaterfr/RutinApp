@@ -1,11 +1,11 @@
 from ..repositories.crud import CRUDBase
 from .handlers import InvalidData
-from ..models.models import Rutina
+from ..models.models import Routine
 from fastapi import HTTPException, status
 
 class RoutineService:
     def __init__(self):
-        self.crud = CRUDBase(Rutina)
+        self.crud = CRUDBase(Routine)
     
     def create(self, data, user_id: int):
         """Validate and create a new routine"""

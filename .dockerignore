@@ -1,0 +1,34 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+dist
+build
+
+# Entorno virtual
+venv
+.venv
+env
+
+# Variables de entorno
+.env
+.env.docker
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov
+
+# Editor
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Alembic (solo versiones, las migraciones sí entran)
+alembic/versions/__pycache__

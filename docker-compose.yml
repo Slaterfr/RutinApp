@@ -1,0 +1,29 @@
+services:
+  api:
+    build: .
+    ports:
+    - "8000:8000"
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+  db:
+    image: postgres:16
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_PASSWORD: "Anakin501"
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "RutinApp"
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:

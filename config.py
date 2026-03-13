@@ -9,3 +9,4 @@ class Config:
     TOKEN_ALGORITH = os.getenv('JWT_ALGORITHM')
     JWT_EXPIRATION = os.getenv('JWT_EXPIRATION')
     GROQ_KEY = os.getenv('GROQ_API_KEY')
+    REFRESH_TOKEN_EXPIRE = os.getenv('REFRESH_TOKEN_EXPIRE_DAYS')
