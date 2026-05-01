@@ -1,12 +1,12 @@
-from ..models import models
-from ..db import database
-from ..schemas import BotRequest
-from ..dependencys import utils, oauth2
+from models import models
+from db import database
+from schemas import BotRequest
+from dependencys import utils, oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter, WebSocket
 from fastapi.responses import HTMLResponse
 from groq import Groq
-from ..config import Config
-from ..services import AIService
+from config import Config
+from services import AIService
 import sqlmodel as sqlm
 api_key = Config.GROQ_KEY
 

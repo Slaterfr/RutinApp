@@ -1,10 +1,10 @@
-from ..models.models import User
-from ..db import database
-from ..dependencys import utils, oauth2
+from models.models import User
+from db import database
+from dependencys import utils, oauth2
 from fastapi import HTTPException, status
 import sqlmodel as sqlm
 from datetime import datetime, timedelta
-from ..models.models import RefreshToken
+from models.models import RefreshToken
 
 class AuthService:
     def login(self, email: str, password: str):

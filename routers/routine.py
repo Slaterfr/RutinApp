@@ -1,13 +1,13 @@
-from ..models import models
-from ..db import database
-from ..schemas import Routine, RoutinesRead, RoutineRead, RoutineUpdate
-from ..dependencys import oauth2
+from models import models
+from db import database
+from schemas import Routine, RoutinesRead, RoutineRead, RoutineUpdate
+from dependencys import oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
 import sqlalchemy
 from typing import Optional
-from ..services.routines import RoutineService
-from ..services.handlers import InvalidData
+from services.routines import RoutineService
+from services.handlers import InvalidData
 
 
 router = APIRouter(

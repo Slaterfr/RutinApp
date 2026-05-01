@@ -10,3 +10,4 @@ class Config:
     JWT_EXPIRATION = os.getenv('JWT_EXPIRATION')
     GROQ_KEY = os.getenv('GROQ_API_KEY')
     REFRESH_TOKEN_EXPIRE = os.getenv('REFRESH_TOKEN_EXPIRE_DAYS')
+    NINJA_KEY = os.getenv('NINA-API-KEY')

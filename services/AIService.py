@@ -1,9 +1,9 @@
-from ..models import models
-from ..db import database
+from models import models
+from db import database
 from sqlmodel import SQLModel
 import sqlmodel as sqml
 from groq import Groq
-from ..config import Config
+from config import Config
 
 api_key = Config.GROQ_KEY
 
@@ -20,16 +20,18 @@ Rutina: {routine}
 data = """Eres un chatbot que actua como un entrenador personal, dando consejos sobre fitness, responde solamente en texto plano, no uses nada mas, ningun comando para salto de linea ni simbolos, ni marcado de negrita. Si el usuario te habla en otro idioma como ingles, puedes responderle en ese idioma."""
 
 
-client = Groq(api_key=api_key)
-
-resp = client.chat.completions.create(
-    model="llama-3.3-70b-versatile",
-    messages=[
+def analyze_routine_with_groq(routine_id: int):
+    """Call Groq API to analyze a routine - only call when needed, not at import time"""
+    client = Groq(api_key=api_key)
+    
+    resp = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
             {"role": "system", "content": data},
-            {f"role": "user", "content": prompt}
-            ]
-        )
-print( resp.choices[0].message.content)
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return resp.choices[0].message.content
 
 
 

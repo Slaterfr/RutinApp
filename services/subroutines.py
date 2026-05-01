@@ -1,6 +1,6 @@
-from ..repositories.crud import CRUDBase
-from ..models.models import Routine, RoutineDay
-from ..db import database
+from repositories.crud import CRUDBase
+from models.models import Routine, RoutineDay
+from db import database
 from fastapi import HTTPException, status
 import sqlmodel as sqlm
 

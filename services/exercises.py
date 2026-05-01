@@ -1,9 +1,10 @@
-from ..repositories.crud import CRUDBase
-from ..models.models import Exercise, RoutineDay, ExerciseDetail
-from ..db import database
+from repositories.crud import CRUDBase
+from models.models import Exercise, RoutineDay, ExerciseDetail
+from db import database
 from fastapi import HTTPException, status
 import sqlmodel as sqlm
 from typing import Optional
+from schemas.exercises import ExerciseDetailsUpdate
 
 
 class ExerciseService:
@@ -12,12 +13,14 @@ class ExerciseService:
         self.crud_details = CRUDBase(ExerciseDetail)
         self.crud_day = CRUDBase(RoutineDay)
     
-    def get_all(self, limit: int = 6, category: str = ""):
+    def get_all(self, limit: int = 6, category: str = "", name : str = ""):
         """Get exercises with optional category filter"""
         with database.session as sess:
             query = sqlm.select(Exercise)
             if category:
-                query = query.where(Exercise.category.contains(category))
+                query = query.where(Exercise.muscles.contains(category))
+            elif name:
+                query = query.where(Exercise.exercise_name.contains(name))
             exercises = sess.exec(query.limit(limit)).all()
             return exercises
     
@@ -43,3 +46,13 @@ class ExerciseService:
             if not day:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Day not found")
             return day.exercises if hasattr(day, 'exercises') else []
+        
+    def update_detail(self, detail_id : int, data : ExerciseDetailsUpdate):
+        """Update Exercise details"""
+        with database.session as sess:
+            detail = sess.exec(sqlm.select(ExerciseDetail).where(ExerciseDetail.id==detail_id))
+            if not detail:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Detail not found")
+            return self.crud_details.update(detail_id, data)
+            
+                

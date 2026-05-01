@@ -3,11 +3,11 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlmodel import select
 from datetime import date, datetime
 
-from ..models import models
-from ..db import database
-from ..schemas.schemas import RefreshRequest
-from ..dependencys import utils, oauth2
-from ..services.auth import AuthService
+from models import models
+from db import database
+from schemas.schemas import RefreshRequest
+from dependencys import utils, oauth2
+from services.auth import AuthService
 
 router = APIRouter(
     tags=['Authentication']

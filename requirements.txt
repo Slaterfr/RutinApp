@@ -8,3 +8,9 @@ pytest
 passlib
 jose
 groq
+slowapi
+pytest 
+pytest-cov 
+httpx
+requests
+beautifulsoup4

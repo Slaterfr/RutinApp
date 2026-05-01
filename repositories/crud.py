@@ -1,8 +1,8 @@
 from sqlmodel import SQLModel as sqlm
 from sqlmodel import select
 
-from ..models import models
-from ..db import database
+from models import models
+from db import database
 from typing import Type, TypeVar, Generic
 
 ModelType = TypeVar("ModelType", bound=sqlm)

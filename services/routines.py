@@ -1,7 +1,8 @@
-from ..repositories.crud import CRUDBase
-from .handlers import InvalidData
-from ..models.models import Routine
+from repositories.crud import CRUDBase
+from services.handlers import InvalidData
+from models.models import Routine
 from fastapi import HTTPException, status
+
 
 class RoutineService:
     def __init__(self):
@@ -9,12 +10,12 @@ class RoutineService:
     
     def create(self, data, user_id: int):
         """Validate and create a new routine"""
-        if data.days < 1:
+        if data.days_per_week < 1:
             raise InvalidData("Error, you routine can't have less than 1 day.")
-        if data.days > 7:
+        if data.days_per_week > 7:
             raise InvalidData("Error, you routine can't have more than 7 days. How many days does your week have?")
         
-        routine_data = {**data.dict(), "owner_id": user_id}
+        routine_data = {**data.model_dump(), "owner_id": user_id}
         return self.crud.create(routine_data)
     
     def get_all(self, skip: int = 0, limit: int = 10, search: str = ""):

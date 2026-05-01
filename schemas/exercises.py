@@ -9,3 +9,9 @@ class ExerciseDetailsCreate(SQLModel):
     rep_target : int
     rest_seconds : int
     weight_notes : str
+
+class ExerciseDetailsUpdate(SQLModel):
+    set_count : Optional[int]
+    rep_target : Optional[int]
+    rest_seconds : Optional[int]
+    weight_notes : Optional[str]

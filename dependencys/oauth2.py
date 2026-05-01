@@ -1,9 +1,9 @@
 from jose import JWTError, jwt
 import datetime as dt
-from ..schemas import TokenData
+from schemas import TokenData
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from ..config import Config
+from config import Config
 
 SECRET_KEY = Config.SECRET_KEY
 ALGORITHM = Config.TOKEN_ALGORITH

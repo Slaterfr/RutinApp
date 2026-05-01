@@ -1,11 +1,11 @@
-from ..models import models
-from ..db import database
-from ..schemas import DayCreate, DayUpdate
-from ..dependencys import utils, oauth2
+from models import models
+from db import database
+from schemas import DayCreate, DayUpdate
+from dependencys import utils, oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
 from sqlmodel import join
-from ..services.subroutines import SubRoutineService
+from services.subroutines import SubRoutineService
 
 
 router = APIRouter(

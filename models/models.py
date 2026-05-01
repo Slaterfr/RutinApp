@@ -31,6 +31,8 @@ class Exercise(SQLModel, table=True):
     instructions: str
     equipment_needed: str
     category: str
+    muscles : str
+    external_id : str | None = Field(default=None, unique=True)
 
 
 # ─── GOALS ───────────────────────────────────────────────────────────────────

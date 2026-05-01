@@ -1,10 +1,10 @@
-from ..models import models
-from ..db import database
-from ..schemas import UserCreate, UserResponse, UserInfo
-from ..dependencys import utils
+from models import models
+from db import database
+from schemas import UserCreate, UserResponse, UserInfo
+from dependencys import utils
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
-from ..services.users import UserService
+from services.users import UserService
 
 router = APIRouter(
     prefix='/users',

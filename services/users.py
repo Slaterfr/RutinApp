@@ -1,6 +1,6 @@
-from ..repositories.crud import CRUDBase
-from ..models.models import User
-from ..dependencys import utils
+from repositories.crud import CRUDBase
+from models.models import User
+from dependencys import utils
 from fastapi import HTTPException, status
 
 
@@ -17,7 +17,7 @@ class UserService:
     def get_by_username(self, username: str):
         """Get user by username"""
         # Since CRUDBase only supports get by ID, we need custom query
-        from ..db import database
+        from db import database
         import sqlmodel as sqlm
         
         with database.session as sess:

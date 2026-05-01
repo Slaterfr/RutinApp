@@ -1,13 +1,15 @@
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from .db import database
-from .routers import routine, user, auth, bot,subRoutine, exercises, AIAnalyze
-from .services.handlers import InvalidData
+
+from models import models  # ADD THIS - Import models BEFORE create_engine()
+from db.database import create_engine
+from routers import routine, user, auth, bot, subRoutine, exercises, AIAnalyze, sessions, workoutsets
+from services.handlers import InvalidData
 
 
 try:
-    database.create_engine()
+    create_engine()
     print("database created")
 except Exception as e:
     print(e)
@@ -20,6 +22,8 @@ app.include_router(bot.router)
 app.include_router(auth.router)
 app.include_router(subRoutine.router)
 app.include_router(exercises.router)
+app.include_router(sessions.router)
+app.include_router(workoutsets.router)
 app.include_router(AIAnalyze.router)
 
 from fastapi.responses import JSONResponse
@@ -29,7 +33,7 @@ app.add_middleware(
         CORSMiddleware, 
         allow_origins=["*"],
         allow_methods=["*"],
-        allow_credentials=["*"],
+        allow_credentials=False,
         allow_headers=["*"]
 
 )
