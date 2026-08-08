@@ -5,11 +5,11 @@ from sqlmodel import SQLModel
 
 class UserCreate(SQLModel):
     username: str = Field(..., min_length=3, max_length=50, description="Username (3-50 chars)")
-    bio: Optional[str] = Field(None, max_length=500, description="User bio")
+    biography: Optional[str] = Field(None, max_length=500, description="User biography")
     email: EmailStr
     password: str = Field(..., min_length=8, description="Password must be at least 8 characters")
 
-    @field_validator('username', 'bio')
+    @field_validator('username', 'biography')
     @classmethod
     def validate_strings(cls, v, info):
         if v and isinstance(v, str) and not v.strip():
@@ -18,6 +18,8 @@ class UserCreate(SQLModel):
 
 
 class UserResponse(SQLModel):
+    id: Optional[int]
+    username: Optional[str]
     email: EmailStr
 
 

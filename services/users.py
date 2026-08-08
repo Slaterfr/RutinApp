@@ -15,13 +15,16 @@ class UserService:
         return self.crud.create(user_data)
     
     def get_by_username(self, username: str):
-        """Get user by username"""
+        """Get user by username or email"""
         # Since CRUDBase only supports get by ID, we need custom query
         from db import database
         import sqlmodel as sqlm
         
         with database.session as sess:
-            user = sess.exec(sqlm.select(User).where(User.username == username)).first()
+            if "@" in username:
+                user = sess.exec(sqlm.select(User).where(User.email == username)).first()
+            else:
+                user = sess.exec(sqlm.select(User).where(User.username == username)).first()
             if not user:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
             return user

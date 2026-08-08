@@ -6,17 +6,26 @@ from db.database import conn
 BASE_URL = "https://oss.exercisedb.dev/api/v1/exercises"
 
 def transform(ex):
+    # Convert primary and secondary muscles to comma-separated string
+    primary_muscles = ex.get("primaryMuscles", [])
+    secondary_muscles = ex.get("secondaryMuscles", [])
+    all_muscles = primary_muscles + secondary_muscles
+    
+    # Convert instructions list to newline-separated text
+    instructions = ex.get("instructions", [])
+    instructions_text = "\n".join(instructions) if isinstance(instructions, list) else instructions
+    
     return {
         "name" : ex.get("name").strip(),
-        "muscles" : ex.get("primaryMuscles", []).replace(),
+        "muscles" : ", ".join(all_muscles) if all_muscles else "",
         "equipment_needed" : ex.get("equipment", ""),
-        "instructions" : ex.get("instructions"),
+        "instructions" : instructions_text,
         "category" : ex.get("category"),
         "external_id" : ex.get("id")
     }
 
 def fetch_all_exercises():
-    file = r"RutinApp\pipeline\data\exercises.json"
+    file = r"pipeline\data\exercises.json"
 
     with open(file, "r") as f:
         return json.load(f)

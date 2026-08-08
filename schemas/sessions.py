@@ -33,6 +33,7 @@ class SessionUpdate(SQLModel):
 class SessionRead(BaseModel):
     id: int
     routine_id: int
+    routine_name: Optional[str] = None
     day_id: int
     session_date: date
     notes: Optional[str]
@@ -40,3 +41,9 @@ class SessionRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class LastSession(SessionRead):
+    day_name: str
+    session_date : date
+    

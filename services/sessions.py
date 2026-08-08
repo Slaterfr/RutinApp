@@ -34,22 +34,44 @@ class SessionService:
     
     def get_by_id(self, session_id: int):
         """Get a specific session by ID"""
-        session = self.crud.read(session_id)
-        if not session:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
-        return session
+        with database.session as sess:
+            query = (
+                sqlm.select(Session, Routine.name)
+                .join(Routine, Session.routine_id == Routine.id)
+                .where(Session.id == session_id)
+            )
+            result = sess.exec(query).first()
+            if not result:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+            
+            session, routine_name = result
+            s_dict = session.model_dump()
+            s_dict["routine_name"] = routine_name
+            return s_dict
     
-    def get_user_sessions(self, user_id: int, skip: int = 0, limit: int = 10, start_date: Optional[date] = None, end_date: Optional[date] = None):
+    def get_user_sessions(self, user_id: int, skip: int = 0, limit: int = 7, start_date: Optional[date] = None, end_date: Optional[date] = None):
         """Get all sessions for a user with optional date filtering"""
         with database.session as sess:
-            query = sqlm.select(Session).where(Session.user_id == user_id)
+            query = sqlm.select(Session, Routine.name).where(Session.user_id == user_id).join(Routine, Session.routine_id == Routine.id)
             
             if start_date:
                 query = query.where(Session.session_date >= start_date)
             if end_date:
                 query = query.where(Session.session_date <= end_date)
             
-            sessions = sess.exec(query.offset(skip).limit(limit)).all()
+            query = query.order_by(Session.session_date.desc(), Session.id.desc())
+            results = sess.exec(query.offset(skip).limit(limit)).all()
+            sessions = [
+                {
+                    "id": session.id,
+                    "routine_id": session.routine_id,
+                    "day_id": session.day_id,
+                    "session_date": session.session_date,
+                    "notes": session.notes,
+                    "routine_name": routine_name
+                }
+                for session, routine_name in results
+            ]
             return sessions
     
     def update(self, session_id: int, data, user_id: int):
@@ -72,3 +94,14 @@ class SessionService:
         
         self.crud.delete(session_id)
         return {"message": "Session deleted successfully"}
+    
+    @staticmethod
+    def get_last(user_id):
+        with database.session as sess:
+            query = sqlm.select(RoutineDay.day_name, Session.id).join(Session).where(Session.user_id == user_id).order_by(Session.session_date.desc(), Session.id.desc()).limit(1)
+            session = sess.exec(query).first()
+
+            return session
+
+
+SessionService.get_last(1)

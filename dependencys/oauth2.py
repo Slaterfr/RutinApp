@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from config import Config
 
 SECRET_KEY = Config.SECRET_KEY
-ALGORITHM = Config.TOKEN_ALGORITH
+ALGORITHM = Config.TOKEN_ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = int(Config.JWT_EXPIRATION)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')

@@ -1,10 +1,10 @@
 from models import models
 from db import database
-from schemas.exercises import ExerciseDetailsCreate, ExerciseDetailsUpdate
+from schemas.exercises import ExerciseDetailsCreate, ExerciseDetailsUpdate, ReadExercise
 from dependencys import oauth2
 from fastapi import FastAPI, Body, Response, status, HTTPException, Depends, APIRouter
 import sqlmodel as sqlm
-from typing import Optional
+from typing import Optional, List
 from services.exercises import ExerciseService
 
 
@@ -16,33 +16,34 @@ router = APIRouter(
 exercise_service = ExerciseService()
 
 
-@router.get('/', response_model=list)
-def get_exercises(
+@router.get('/', response_model=List[ReadExercise])
+async def get_exercises(
     limit: int = 10,
     category: Optional[str] = None,
     name : Optional[str] = None
 ):
     """Get all available exercises, optionally filtered by category"""
-    return exercise_service.get_all(limit=limit, category=category, name=name)
+    return await exercise_service.get_all(limit=limit, category=category, name=name)
 
 
 @router.get('/{exercise_id}', response_model=dict)
-def get_exercise(exercise_id: int):
+async def get_exercise(exercise_id: int):
     """Get a specific exercise by ID"""
-    return exercise_service.get_by_id(exercise_id)
+    return await exercise_service.get_by_id(exercise_id)
 
 
-@router.post('/{exercise_id}/details', response_model=dict, status_code=status.HTTP_201_CREATED)
+@router.post('/{exercise_id}/details', status_code=status.HTTP_201_CREATED)
 def add_exercise_to_day(
-    exercise_id: int,
+    exercise_id : int,
     data: ExerciseDetailsCreate,
-    user_id: int = Depends(oauth2.get_current_user)
+    #user_id: int = Depends(oauth2.get_current_user)
 ):
     """Add an exercise to a specific training day"""
-    return exercise_service.add_detail(exercise_id, data, user_id.id)
+    return exercise_service.add_detail(exercise_id, data)
 
 
 @router.get('/day/{day_id}/details', response_model=list)
+@router.get('/{day_id}/exercises_details', response_model=list)
 def get_day_exercises(day_id: int):
     """Get all exercises assigned to a specific training day"""
     return exercise_service.get_by_day(day_id)

@@ -119,3 +119,16 @@ class RefreshToken(SQLModel, table=True):
     expires_at: datetime
     revoked: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+# ─── STATISTICS ──────────────────────────────────────────────────────────────
+
+class WeekProgress(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    week_start_date: date
+    total_workouts: int = Field(default=0)
+    total_volume: float = Field(default=0.0)
+    muscle_distribution: str = Field(default="{}")
+    active_streak: int = Field(default=0)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)

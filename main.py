@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from models import models  # ADD THIS - Import models BEFORE create_engine()
 from db.database import create_engine
-from routers import routine, user, auth, bot, subRoutine, exercises, AIAnalyze, sessions, workoutsets
+from routers import routine, user, auth, bot, subRoutine, exercises, AIAnalyze, sessions, workoutsets, stadistics
 from services.handlers import InvalidData
 
 
@@ -13,6 +13,8 @@ try:
     print("database created")
 except Exception as e:
     print(e)
+
+
 
 
 app = FastAPI()
@@ -25,6 +27,7 @@ app.include_router(exercises.router)
 app.include_router(sessions.router)
 app.include_router(workoutsets.router)
 app.include_router(AIAnalyze.router)
+app.include_router(stadistics.router)
 
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException

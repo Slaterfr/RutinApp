@@ -3,6 +3,13 @@ from typing import Optional
 from sqlmodel import SQLModel
 
 
+class DayInfo(BaseModel):
+    id: int
+    day_number: int
+    day_name: str
+    focus_area: str
+
+
 class Routine(SQLModel):
     name: str = Field(..., min_length=1, max_length=100, description="Routine name")
     days_per_week: int = Field(..., gt=0, le=7, description="Days per week (1-7)")
@@ -29,6 +36,7 @@ class RoutineRead(BaseModel):
     name: str
     days_per_week: int
     estimated_hours: float
+    days: list[DayInfo]
 
 
 class RoutineUpdate(SQLModel):

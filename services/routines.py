@@ -1,7 +1,9 @@
 from repositories.crud import CRUDBase
 from services.handlers import InvalidData
-from models.models import Routine
+from models.models import Routine, RoutineDay
+from db import database
 from fastapi import HTTPException, status
+import sqlmodel as sqlm
 
 
 class RoutineService:
@@ -25,12 +27,26 @@ class RoutineService:
             routines = [r for r in routines if search.lower() in r.name.lower()]
         return routines
     
+    def get_user_routines(self, user_id : int):
+        with database.session as sess:
+            query = sqlm.select(Routine).where(Routine.owner_id == user_id)
+            routines = sess.exec(query).all()
+            return routines
+
     def get_by_id(self, routine_id: int):
-        """Get a single routine by ID"""
-        routine = self.crud.read(routine_id)
-        if not routine:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
-        return routine
+        """Get a single routine by ID with its days"""
+        with database.session as sess:
+            routine = sess.exec(
+                sqlm.select(Routine).where(Routine.id == routine_id)
+            ).first()
+            
+            if not routine:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
+            
+            # Load days with the routine
+            sess.refresh(routine)
+            
+            return routine
     
     def update(self, routine_id: int, data, user_id: int):
         """Update a routine (ownership check)"""

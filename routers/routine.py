@@ -22,6 +22,11 @@ routine_service = RoutineService()
 def get_all_routines(limit : int = 10, skip : int = 0, search : Optional[str] = "" ):
     return routine_service.get_all(skip=skip, limit=limit, search=search)
 
+@router.get('/users/{user_id}')
+@router.get('/{user_id}')
+def get_user_routines(user_id : int):
+    return routine_service.get_user_routines(user_id)
+
 @router.post('/')
 def create_routine(routine : Routine, user_id: int = Depends(oauth2.get_current_user) ):
     return routine_service.create(routine, user_id.id)
