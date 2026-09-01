@@ -18,6 +18,9 @@ except Exception as e:
 
 
 app = FastAPI()
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 app.include_router(routine.router)
 app.include_router(user.router)
 app.include_router(bot.router)

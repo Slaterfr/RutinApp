@@ -40,7 +40,11 @@ class ExerciseService:
                 return serialized_exercises
         if name:        
             return await fetch()
-        return await RedisService.caching_aside(self, key, fetch)
+        try:
+            return await RedisService.caching_aside(self, key, fetch)
+        except Exception as e:
+            logger.error(f"Error al obtener ejercicios: {e}")
+            return await fetch()
         
     async def get_by_id(self, exercise_id):
         """Get a specific exercise by ID"""
