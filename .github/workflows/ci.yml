@@ -29,6 +29,14 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
+        env:
+          DATABASE_URI: "sqlite:///:memory:"
+          SECRET_KEY: "ci_test_secret_key_at_least_32_characters_long_12345"
+          JWT_ALGORITHM: "HS256"
+          JWT_EXPIRATION: "30"
+          REFRESH_TOKEN_EXPIRE_DAYS: "7"
+          GROQ_API_KEY: "test_groq_key"
+          NINA-API-KEY: "test_ninja_key"
         run: pytest
 
       - name: Build Docker image
