@@ -4,8 +4,10 @@ import psycopg2 as sql
 
 URI = str(Config.DATABASE_URI)
 
-conn = sql.connect(Config.DATABASE_URI)
-
+try:
+    conn = sql.connect(Config.DATABASE_URI)
+except Exception:
+    conn = None
  
 engine = sqlm.create_engine(URI, echo=True)
 def create_engine():

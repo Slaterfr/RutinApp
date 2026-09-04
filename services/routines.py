@@ -56,7 +56,7 @@ class RoutineService:
         if routine.owner_id != user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this routine")
         
-        return self.crud.update(routine_id, data.dict())
+        return self.crud.update(routine_id, data.model_dump(exclude_unset=True))
     
     def delete(self, routine_id: int, user_id: int):
         """Delete a routine (ownership check)"""

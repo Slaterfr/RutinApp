@@ -102,6 +102,4 @@ class SessionService:
             session = sess.exec(query).first()
 
             return session
-
-
-SessionService.get_last(1)
+

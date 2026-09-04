@@ -49,23 +49,19 @@ class TestRoutineService:
             )
 
     def test_create_routine_invalid_days_too_low(self, routine_service):
-        """Test that days_per_week < 1 raises InvalidData"""
-        data = Routine(
-            name="Valid Name",
-            days_per_week=0,  # Invalid!
-            estimated_hours=1.5
-        )
-
-        with pytest.raises(InvalidData):
-            routine_service.create(data, user_id=1)
+        """Test that days_per_week < 1 raises ValidationError"""
+        with pytest.raises(ValidationError):
+            Routine(
+                name="Valid Name",
+                days_per_week=0,  # Invalid!
+                estimated_hours=1.5
+            )
 
     def test_create_routine_invalid_days_too_high(self, routine_service):
-        """Test that days_per_week > 7 raises InvalidData"""
-        data = Routine(
-            name="Valid Name",
-            days_per_week=8,  # Invalid!
-            estimated_hours=1.5
-        )
-
-        with pytest.raises(InvalidData):
-            routine_service.create(data, user_id=1)
+        """Test that days_per_week > 7 raises ValidationError"""
+        with pytest.raises(ValidationError):
+            Routine(
+                name="Valid Name",
+                days_per_week=8,  # Invalid!
+                estimated_hours=1.5
+            )
