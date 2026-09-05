@@ -72,6 +72,7 @@ class RoutineDay(SQLModel, table=True):
     day_number: int
     day_name: str
     focus_area: str
+    weekday: Optional[int] = Field(default=None)  # 0=Monday, 1=Tuesday, ..., 6=Sunday
     exercises: list["ExerciseDetail"] = Relationship(back_populates="day")
 
 

@@ -43,10 +43,33 @@ class RoutineService:
             if not routine:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
             
-            # Load days with the routine
-            sess.refresh(routine)
-            
-            return routine
+            days = sess.exec(
+                sqlm.select(RoutineDay).where(RoutineDay.routine_id == routine_id)
+            ).all()
+
+            sorted_days = sorted(
+                days,
+                key=lambda x: (x.weekday if x.weekday is not None else 99, x.day_number)
+            )
+
+            return {
+                "id": routine.id,
+                "name": routine.name,
+                "days_per_week": routine.days_per_week,
+                "estimated_hours": routine.estimated_hours,
+                "owner_id": routine.owner_id,
+                "is_template": routine.is_template,
+                "days": [
+                    {
+                        "id": d.id,
+                        "day_number": d.day_number,
+                        "day_name": d.day_name,
+                        "focus_area": d.focus_area,
+                        "weekday": d.weekday,
+                    }
+                    for d in sorted_days
+                ]
+            }
     
     def update(self, routine_id: int, data, user_id: int):
         """Update a routine (ownership check)"""
@@ -56,7 +79,8 @@ class RoutineService:
         if routine.owner_id != user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to update this routine")
         
-        return self.crud.update(routine_id, data.model_dump(exclude_unset=True))
+        self.crud.update(routine_id, data.model_dump(exclude_unset=True))
+        return self.get_by_id(routine_id)
     
     def delete(self, routine_id: int, user_id: int):
         """Delete a routine (ownership check)"""

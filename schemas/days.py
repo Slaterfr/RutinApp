@@ -7,6 +7,7 @@ class DayCreate(SQLModel):
     day_number: int = Field(..., ge=1, le=7, description="Day number (1-7)")
     day_name: str = Field(..., min_length=1, max_length=50, description="Day name (e.g., Push, Pull, Legs)")
     focus_area: str = Field(..., min_length=1, max_length=100, description="Focus area/muscle groups")
+    weekday: Optional[int] = Field(None, ge=0, le=6, description="Day of week (0=Monday, 6=Sunday)")
 
     @field_validator('day_name', 'focus_area')
     @classmethod
@@ -27,6 +28,7 @@ class DayUpdate(SQLModel):
     day_number: Optional[int] = Field(None, ge=1, le=7)
     day_name: Optional[str] = Field(None, min_length=1, max_length=50)
     focus_area: Optional[str] = Field(None, min_length=1, max_length=100)
+    weekday: Optional[int] = Field(None, ge=0, le=6, description="Day of week (0=Monday, 6=Sunday)")
 
     @field_validator('day_name', 'focus_area')
     @classmethod

@@ -8,6 +8,7 @@ class DayInfo(BaseModel):
     day_number: int
     day_name: str
     focus_area: str
+    weekday: Optional[int] = None
 
 
 class Routine(SQLModel):

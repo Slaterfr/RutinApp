@@ -16,7 +16,21 @@ class SubRoutineService:
             routine = sess.exec(sqlm.select(Routine).where(Routine.id == routine_id)).first()
             if not routine:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Routine not found")
-            return routine.days if hasattr(routine, 'days') else []
+            days = sess.exec(
+                sqlm.select(RoutineDay)
+                .where(RoutineDay.routine_id == routine_id)
+            ).all()
+            return [
+                {
+                    "id": d.id,
+                    "routine_id": d.routine_id,
+                    "day_number": d.day_number,
+                    "day_name": d.day_name,
+                    "focus_area": d.focus_area,
+                    "weekday": d.weekday,
+                }
+                for d in sorted(days, key=lambda x: (x.weekday if x.weekday is not None else 99, x.day_number))
+            ]
     
     def create_day(self, routine_id: int, data, user_id: int):
         """Create a new day in a routine (ownership check)"""
@@ -26,7 +40,7 @@ class SubRoutineService:
         if routine.owner_id != user_id:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to modify this routine")
         
-        day_data = {**data.dict(), "routine_id": routine_id}
+        day_data = {**data.model_dump(), "routine_id": routine_id}
         return self.crud_day.create(day_data)
     
     def update_day(self, routine_id: int, day_id: int, data, user_id: int):
@@ -41,7 +55,7 @@ class SubRoutineService:
         if not day:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Day not found")
         
-        return self.crud_day.update(day_id, data.dict())
+        return self.crud_day.update(day_id, data.model_dump(exclude_unset=True))
     
     def delete_day(self, routine_id: int, day_id: int, user_id: int):
         """Delete a day (ownership check)"""
